@@ -344,7 +344,6 @@ class Installer
 
     private function runInstall(array $dbConfig, array $userCredentials): array
     {
-        die("test");
         $errors = [];
 
         if (!$this->skipDatabaseConfig) {
@@ -585,6 +584,9 @@ class Installer
 
     public function setupDatabase(array $userCredentials, array $errors = []): array
     {
+        if (!$this->skipDatabaseConfig)
+            return [];
+
         $db = \Pimcore\Db::get();
         $db->query('SET FOREIGN_KEY_CHECKS=0;');
 
