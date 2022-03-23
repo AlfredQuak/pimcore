@@ -241,9 +241,11 @@ class Installer
     {
         $this->dispatchStepEvent('validate_parameters');
 
+        $dbConfig = [];
 
-        $dbConfig = $this->resolveDbConfig($params);
         if (!$this->skipDatabaseConfig) {
+
+            $dbConfig = $this->resolveDbConfig($params);
             $errors = [];
 
             // try to establish a mysql connection
