@@ -584,7 +584,7 @@ class Installer
 
     public function setupDatabase(array $userCredentials, array $errors = []): array
     {
-        if (!$this->skipDatabaseConfig)
+        if ($this->skipDatabaseConfig)
             return [];
 
         $db = \Pimcore\Db::get();
