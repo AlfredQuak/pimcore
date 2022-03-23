@@ -11,8 +11,8 @@ declare(strict_types=1);
  * Full copyright and license information is available in
  * LICENSE.md which is distributed with this source code.
  *
- *  @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
- *  @license    http://www.pimcore.org/license     GPLv3 and PCL
+ * @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
+ * @license    http://www.pimcore.org/license     GPLv3 and PCL
  */
 
 namespace Pimcore\Bundle\InstallBundle;
@@ -125,9 +125,10 @@ class Installer
     ];
 
     public function __construct(
-        LoggerInterface $logger,
+        LoggerInterface          $logger,
         EventDispatcherInterface $eventDispatcher
-    ) {
+    )
+    {
         $this->logger = $logger;
         $this->eventDispatcher = $eventDispatcher;
     }
@@ -240,30 +241,32 @@ class Installer
     {
         $this->dispatchStepEvent('validate_parameters');
 
+
         $dbConfig = $this->resolveDbConfig($params);
-        $errors = [];
+        if (!$this->skipDatabaseConfig) {
+            $errors = [];
 
-        // try to establish a mysql connection
-        try {
-            $config = new Configuration();
+            // try to establish a mysql connection
+            try {
+                $config = new Configuration();
 
-            /** @var Connection $db */
-            $db = DriverManager::getConnection($dbConfig, $config);
+                /** @var Connection $db */
+                $db = DriverManager::getConnection($dbConfig, $config);
 
-            $this->dispatchStepEvent('check_prerequisites');
+                $this->dispatchStepEvent('check_prerequisites');
 
-            // check all db-requirements before install
-            $errors = $this->checkPrerequisites($db);
+                // check all db-requirements before install
+                $errors = $this->checkPrerequisites($db);
 
-            if (count($errors) > 0) {
+                if (count($errors) > 0) {
+                    return $errors;
+                }
+            } catch (\Exception $e) {
+                $errors[] = sprintf('Couldn\'t establish connection to MySQL: %s', $e->getMessage());
+
                 return $errors;
             }
-        } catch (\Exception $e) {
-            $errors[] = sprintf('Couldn\'t establish connection to MySQL: %s', $e->getMessage());
-
-            return $errors;
         }
-
         // check username & password
         $adminUser = $params['admin_username'] ?? '';
         $adminPass = $params['admin_password'] ?? '';
@@ -341,34 +344,37 @@ class Installer
 
     private function runInstall(array $dbConfig, array $userCredentials): array
     {
+        die("test");
         $errors = [];
 
-        $this->dispatchStepEvent('create_config_files');
+        if (!$this->skipDatabaseConfig) {
+            $this->dispatchStepEvent('create_config_files');
 
-        unset($dbConfig['driver']);
-        unset($dbConfig['wrapperClass']);
+            unset($dbConfig['driver']);
+            unset($dbConfig['wrapperClass']);
 
-        if (isset($dbConfig['driverOptions'])) {
-            $dbConfig['options'] = $dbConfig['driverOptions'];
-            unset($dbConfig['driverOptions']);
-        }
+            if (isset($dbConfig['driverOptions'])) {
+                $dbConfig['options'] = $dbConfig['driverOptions'];
+                unset($dbConfig['driverOptions']);
+            }
 
-        $dbConfig['mapping_types'] = [
-            'enum' => 'string',
-            'bit' => 'boolean',
-        ];
+            $dbConfig['mapping_types'] = [
+                'enum' => 'string',
+                'bit' => 'boolean',
+            ];
 
-        $doctrineConfig = [
-            'doctrine' => [
-                'dbal' => [
-                    'connections' => [
-                        'default' => $dbConfig,
+            $doctrineConfig = [
+                'doctrine' => [
+                    'dbal' => [
+                        'connections' => [
+                            'default' => $dbConfig,
+                        ],
                     ],
                 ],
-            ],
-        ];
+            ];
 
-        $this->createConfigFiles($doctrineConfig);
+            $this->createConfigFiles($doctrineConfig);
+        }
 
         $this->dispatchStepEvent('boot_kernel');
 
@@ -391,11 +397,11 @@ class Installer
 
         $kernel->boot();
 
-        $this->dispatchStepEvent('setup_database');
-
-        $errors = $this->setupDatabase($userCredentials, $errors);
-
         if (!$this->skipDatabaseConfig) {
+            $this->dispatchStepEvent('setup_database');
+
+            $errors = $this->setupDatabase($userCredentials, $errors);
+
             // now we're able to write the server version to the database.yml
             $db = \Pimcore\Db::get();
             if ($db instanceof Connection) {
