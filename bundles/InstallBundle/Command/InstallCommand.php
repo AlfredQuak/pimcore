@@ -11,8 +11,8 @@ declare(strict_types=1);
  * Full copyright and license information is available in
  * LICENSE.md which is distributed with this source code.
  *
- *  @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
- *  @license    http://www.pimcore.org/license     GPLv3 and PCL
+ * @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
+ * @license    http://www.pimcore.org/license     GPLv3 and PCL
  */
 
 namespace Pimcore\Bundle\InstallBundle\Command;
@@ -59,9 +59,10 @@ class InstallCommand extends Command
     private $options;
 
     public function __construct(
-        Installer $installer,
+        Installer                $installer,
         EventDispatcherInterface $eventDispatcher
-    ) {
+    )
+    {
         $this->installer = $installer;
         $this->eventDispatcher = $eventDispatcher;
 
@@ -330,12 +331,14 @@ class InstallCommand extends Command
 
             $value = $input->getOption($name);
 
-            // Empty MySQL password allowed, empty ssl cert path means it is not used
-            if ($value || $name === 'mysql-password' || $name === 'mysql-ssl-cert-path' || $config['mode'] === InputOption::VALUE_NONE) {
-                $param = str_replace('-', '_', $name);
-                $params[$param] = $value;
-            } else {
-                $missing[] = $name;
+            if (!$this->skipDatabaseConfig) {
+                // Empty MySQL password allowed, empty ssl cert path means it is not used
+                if ($value || $name === 'mysql-password' || $name === 'mysql-ssl-cert-path' || $config['mode'] === InputOption::VALUE_NONE) {
+                    $param = str_replace('-', '_', $name);
+                    $params[$param] = $value;
+                } else {
+                    $missing[] = $name;
+                }
             }
         }
 

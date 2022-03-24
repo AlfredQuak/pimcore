@@ -129,7 +129,6 @@ class Installer
         EventDispatcherInterface $eventDispatcher
     )
     {
-        die("constructor stop test");
         $this->logger = $logger;
         $this->eventDispatcher = $eventDispatcher;
     }
@@ -587,8 +586,6 @@ class Installer
 
     public function setupDatabase(array $userCredentials, array $errors = []): array
     {
-        echo ("Test");
-        die("stop");
         if ($this->skipDatabaseConfig)
             return [];
 
