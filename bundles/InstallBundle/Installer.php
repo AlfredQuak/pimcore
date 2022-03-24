@@ -586,6 +586,7 @@ class Installer
 
     public function setupDatabase(array $userCredentials, array $errors = []): array
     {
+        echo ("Test");
         die("stop");
         if ($this->skipDatabaseConfig)
             return [];
