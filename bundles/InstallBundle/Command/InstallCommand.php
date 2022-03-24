@@ -62,6 +62,7 @@ class InstallCommand extends Command
         Installer $installer,
         EventDispatcherInterface $eventDispatcher
     ) {
+        die("install command exit");
         $this->installer = $installer;
         $this->eventDispatcher = $eventDispatcher;
 
