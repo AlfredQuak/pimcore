@@ -161,12 +161,12 @@ class InstallCommand extends Command
                 null,
                 InputOption::VALUE_NONE,
                 'Do not abort if a <comment>system.yml</comment> file already exists'
-            )/*->addOption(
+            )->addOption(
                 'skip-database-config',
                 null,
                 InputOption::VALUE_NONE,
                 'Do not write a database config file: <comment>database.yml</comment>'
-            )*/->addOption(
+            )->addOption(
                 'skip-database-structure',
                 null,
                 InputOption::VALUE_NONE,
