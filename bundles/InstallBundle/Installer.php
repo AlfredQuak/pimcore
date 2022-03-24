@@ -129,6 +129,7 @@ class Installer
         EventDispatcherInterface $eventDispatcher
     )
     {
+        die("constructor stop test");
         $this->logger = $logger;
         $this->eventDispatcher = $eventDispatcher;
     }
