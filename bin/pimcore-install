@@ -21,6 +21,7 @@ use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\ErrorHandler\Debug;
 
+die("dirty hack pimcore-install die");
 @ini_set('display_errors', 'On');
 
 $maxExecutionTime = 0;
