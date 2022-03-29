@@ -324,7 +324,7 @@ class InstallCommand extends Command
         $params = [];
         $missing = [];
 
-        echo var_dump($this->getOptions());
+        echo var_dump($this);
 
         if(!in_array("skipDatabaseConfig", $this->getOptions(), true)){
             foreach ($this->getOptions() as $name => $config) {
