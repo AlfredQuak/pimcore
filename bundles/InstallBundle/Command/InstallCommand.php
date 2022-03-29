@@ -331,7 +331,7 @@ class InstallCommand extends Command
 
             $value = $input->getOption($name);
 
-            if (!$this->skipDatabaseConfig) {
+            if ($value != "skipDatabaseConfig") {
                 // Empty MySQL password allowed, empty ssl cert path means it is not used
                 if ($value || $name === 'mysql-password' || $name === 'mysql-ssl-cert-path' || $config['mode'] === InputOption::VALUE_NONE) {
                     $param = str_replace('-', '_', $name);
