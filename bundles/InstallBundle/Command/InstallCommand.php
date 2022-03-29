@@ -324,16 +324,14 @@ class InstallCommand extends Command
         $params = [];
         $missing = [];
 
-        foreach ($this->getOptions() as $name => $config) {
-            if (!$this->installerNeedsOption($config)) {
-                continue;
-            }
+        if(!in_arrayi("skipDatabaseConfig",$this->getOptions())){
+            foreach ($this->getOptions() as $name => $config) {
+                if (!$this->installerNeedsOption($config)) {
+                    continue;
+                }
 
-            $value = $input->getOption($name);
-            echo ("debug output_1: ".var_dump($value));
-            echo ("debug output_2: ".$name);
+                $value = $input->getOption($name);
 
-            if ($name !== "skipDatabaseConfig") {
                 // Empty MySQL password allowed, empty ssl cert path means it is not used
                 if ($value || $name === 'mysql-password' || $name === 'mysql-ssl-cert-path' || $config['mode'] === InputOption::VALUE_NONE) {
                     $param = str_replace('-', '_', $name);
