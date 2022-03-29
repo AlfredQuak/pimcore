@@ -330,6 +330,8 @@ class InstallCommand extends Command
             }
 
             $value = $input->getOption($name);
+            echo ("debug output_1: ".var_dump($value));
+            echo ("debug output_2: ".$name);
 
             if ($name !== "skipDatabaseConfig") {
                 // Empty MySQL password allowed, empty ssl cert path means it is not used
